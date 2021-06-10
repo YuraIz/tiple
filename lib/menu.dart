@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +19,10 @@ class MenuItem {
   bool isRecipe;
 
   ///Recipe data
-  Recipe recipe;
+  Recipe recipe = Recipe('no name', [], 'no text');
 
   ///Name of week day
-  String dayName;
+  String dayName = 'no name';
 
   ///Constructor for recipe MenuItem
   MenuItem(this.recipe) {
@@ -41,11 +44,27 @@ class MenuItem {
   ///Remove all ingredients from shopList
   void clearProductLists() => ingredients
       .forEach((ingredient) => ProductLists.shopList.remove(ingredient));
+
+  ///Convert to json
+  Map<String, dynamic> get toJson {
+    Map<String, dynamic> json = Map<String, dynamic>();
+    json['isRecipe'] = isRecipe;
+    json['recipe'] = recipe.toJson;
+    json['dayName'] = dayName;
+    return json;
+  }
+
+  ///Construct from json
+  MenuItem.fromJson(Map<String, dynamic> json) {
+    isRecipe = json['isRecipe'];
+    recipe = Recipe.fromJson(json['recipe']);
+    dayName = json['dayName'];
+  }
 }
 
 class MenuRecipes {
   ///List of MenuItems
-  static List<MenuItem> items = <MenuItem>[
+  static var _items = <MenuItem>[
     MenuItem.day('Monday'),
     MenuItem.day('Tuesday'),
     MenuItem.day('Wednesday'),
@@ -56,13 +75,56 @@ class MenuRecipes {
     MenuItem.day('Other'),
   ];
 
+  static bool contains(Object element) => _items.contains(element);
+
+  static int get length => _items.length;
+
+  static void add(MenuItem item) {
+    _items.add(item);
+    saveState();
+  }
+
+  static void remove(MenuItem item) {
+    _items.remove(item);
+    saveState();
+  }
+
   ///Method for item reorder
   static void reorder(int oldIndex, int newIndex) {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    final MenuItem item = items.removeAt(oldIndex);
-    items.insert(newIndex, item);
+    final MenuItem item = _items.removeAt(oldIndex);
+    _items.insert(newIndex, item);
+    saveState();
+  }
+
+  ///Convert to json
+  static List<dynamic> get toJson{
+    List<dynamic> json = [];
+    _items.forEach((element) => json.add(element.toJson));
+    return json;
+  }
+
+  ///Construct from json
+  static void fromJson(List<dynamic> json) {
+    _items.clear();
+    for(var data in json) {
+      _items.add(MenuItem.fromJson(data));
+    }
+  }
+
+  ///Save state to app data
+  static void saveState() async {
+    File localMenu = File(Directory.systemTemp.path + 'local_menu.json');
+    localMenu.create();
+    localMenu.writeAsString(jsonEncode(toJson));
+  }
+
+  ///Load state from app data
+  static void loadState() async {
+    File localMenu = File(Directory.systemTemp.path + 'local_menu.json');
+    fromJson(jsonDecode(localMenu.readAsStringSync()));
   }
 }
 
@@ -72,7 +134,7 @@ class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: (MenuRecipes.items.length > 8)
+      body: (MenuRecipes.length > 8)
           ? Theme(
               data: ThemeData(
                 shadowColor: Colors.transparent,
@@ -87,14 +149,14 @@ class _MenuState extends State<Menu> {
                   });
                 },
                 children: [
-                  for (var item in MenuRecipes.items)
+                  for (var item in MenuRecipes._items)
                     (item.isRecipe)
                         ? Dismissible(
                             key: UniqueKey(),
                             direction: DismissDirection.horizontal,
                             onDismissed: (_) => setState(() {
                               item.clearProductLists();
-                              MenuRecipes.items.remove(item);
+                              MenuRecipes.remove(item);
                             }),
                             child: GestureDetector(
                               onTap: () => setState(
@@ -288,12 +350,12 @@ class _MenuState extends State<Menu> {
                             setState(() {
                               if (RecipesList.data.any(
                                   (element) => element.name == _lastTitle)) {
-                                MenuRecipes.items.add(MenuItem(RecipesList.data
+                                MenuRecipes.add(MenuItem(RecipesList.data
                                     .elementAt(RecipesList.data.indexWhere(
                                         (element) =>
                                             element.name == _lastTitle))));
                               } else {
-                                MenuRecipes.items.add(
+                                MenuRecipes.add(
                                   MenuItem(
                                     Recipe(_lastTitle, [],
                                         'There is no such recipe in database, add ingredients to shop list by yourself'),
@@ -318,7 +380,7 @@ class _MenuState extends State<Menu> {
                                     child: GestureDetector(
                                       onTap: () => setState(() {
                                         _lastTitle = '';
-                                        MenuRecipes.items.add(MenuItem(
+                                        MenuRecipes.add(MenuItem(
                                             RecipesList.data.elementAt(
                                                 RecipesList.data.indexWhere(
                                                     (element) =>

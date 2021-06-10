@@ -63,7 +63,7 @@ packages:
       name: ffi
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.2"
   file:
     dependency: transitive
     description:
@@ -77,7 +77,7 @@ packages:
       name: fluentui_system_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.126"
+    version: "1.1.127"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -88,7 +88,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: cf57b14014caff3f5aae24341c4f0f4f56601790
+      resolved-ref: f006c881310f7cfdce3c9f5ddd476fb3a073c453
       url: "git://github.com/yangyxd/flutter_picker.git"
     source: git
     version: "2.0.1"
@@ -145,7 +145,7 @@ packages:
     source: hosted
     version: "1.3.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       url: "https://pub.dartlang.org"

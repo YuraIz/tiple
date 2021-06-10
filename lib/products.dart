@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -129,6 +132,7 @@ class ProductLists {
   static void sort() {
     shopList.sort((a, b) => a.name.compareTo(b.name));
     fridge.sort((a, b) => a.name.compareTo(b.name));
+    saveState();
   }
 
   ///Convert to json
@@ -153,6 +157,19 @@ class ProductLists {
     for(var data in json['fridge']) {
       fridge.add(ProductData.fromJson(data));
     }
+  }
+
+  ///Save state to app data
+  static void saveState() async {
+    File localLists = File(Directory.systemTemp.path + 'local_lists.json');
+    localLists.create();
+    localLists.writeAsString(jsonEncode(toJson));
+  }
+
+  ///Load state from app data
+  static void loadState() async {
+    File localLists = File(Directory.systemTemp.path + 'local_lists.json');
+    fromJson(jsonDecode(localLists.readAsStringSync()));
   }
 }
 

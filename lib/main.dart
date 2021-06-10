@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
+import 'package:tiple/products.dart';
 
 import 'fridge.dart';
 import 'menu.dart';
@@ -9,6 +10,8 @@ import 'shop_list.dart';
 
 void main() {
   RecipesList.addFromJson();
+  ProductLists.loadState();
+  MenuRecipes.loadState();
   runApp(MyApp());
 }
 

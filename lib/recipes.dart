@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,16 @@ import 'package:tiple/products.dart';
 
 import 'menu.dart';
 
+var recipesUri = Uri.parse(
+    'https://raw.githubusercontent.com/YuraIz/testJsonRecipes/main/recipes.json');
+
 class Recipe {
   ///Recipe name
   String name;
+
   ///Recipe ingredients
   List<ProductData> ingredients;
+
   ///Recipe preparation
   String recipeText;
 
@@ -33,6 +39,16 @@ class Recipe {
       );
     }
   }
+
+  Map<String, dynamic> get toJson {
+    Map<String, dynamic> json = Map<String, dynamic>();
+    json['name'] = name;
+    List<dynamic> jsonIngredients = [];
+    ingredients.forEach((element) => jsonIngredients.add(element.toJson));
+    json['ingredients'] = jsonIngredients;
+    json['recipeText'] = recipeText;
+    return json;
+  }
 }
 
 class RecipesList {
@@ -46,12 +62,28 @@ class RecipesList {
     return names;
   }
 
-  ///Get recipes from github
+  ///Get recipes from github or local data
   static void addFromJson() async {
-    http.Response response = await http.get(Uri.parse('https://git.io/JsSSu'));
+    File localRecipes = File(Directory.systemTemp.path + 'local_recipes.json');
+    dynamic json;
 
-    data.clear();
-    var json = jsonDecode(response.body);
+    if (localRecipes.existsSync()) {
+      json = jsonDecode(localRecipes.readAsStringSync());
+    } else {
+      http.Response response = await http.get(recipesUri);
+      json = jsonDecode(response.body);
+      localRecipes.create();
+      localRecipes.writeAsString(response.body);
+    }
+
+    localRecipes.lastModified().then((value) {
+      if(DateTime.now().difference(value).inDays > 10) {
+        http
+            .get(recipesUri)
+            .then((response) => localRecipes.writeAsString(response.body));
+      }
+    });
+
     for (int i = 0; i < json.length; i++) {
       data.add(Recipe.fromJson(json[i]));
       data[i].ingredients.sort((a, b) => a.name.compareTo(b.name));
@@ -183,7 +215,7 @@ class _RecipesPageState extends State<RecipesPage> {
                                   highlightColor: Colors.transparent,
                                   minWidth: 64,
                                   height: 64,
-                                  child: (MenuRecipes.items.contains(
+                                  child: (MenuRecipes.contains(
                                           RecipesList.data[_currentIndex]))
                                       ? Icon(
                                           FluentIcons.add_circle_32_filled,
@@ -196,7 +228,7 @@ class _RecipesPageState extends State<RecipesPage> {
                                           color: Colors.black87,
                                         ),
                                   onPressed: () => (setState(() => {
-                                        MenuRecipes.items.add(
+                                        MenuRecipes.add(
                                           MenuItem(
                                               RecipesList.data[_currentIndex]),
                                         ),
