@@ -1,1 +1,4 @@
-App for shop list management
+![](./images/logo.png "tiple")
+
+# App for shop list management
+
