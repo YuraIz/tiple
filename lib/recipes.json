@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Pasta with 15-Minute Burst Cherry Tomato Sauce",
+    "ingredients": [
+      {"name": "pasta",                                 "count": 1,   "unit": "pound"},
+      {"name": "kosher salt",                           "count": 1,   "unit": "none"},
+      {"name": "olive oil",                             "count": 0.5, "unit": "cup"},
+      {"name": "large garlic cloves, finely chopped",   "count": 2,   "unit": "none"},
+      {"name": "cherry tomatoes",                       "count": 3,   "unit": "pint"},
+      {"name": "freshly ground black pepper",           "count": 0.5, "unit": "teaspoon"},
+      {"name": "sugar",                                 "count": 1,   "unit": "pinch"},
+      {"name": "coarsely chopped fresh basil",          "count": 1,   "unit": "cup"},
+      {"name": "Freshly grated Parmesan (for serving)", "count": 1,   "unit": "none"}
+    ],
+    "recipeText": "Cook pasta in a large pot of boiling salted water, stirring occasionally, until al dente; drain and transfer to a large bowl. Meanwhile, heat oil in a 12\" skillet or wide heavy saucepan over medium-high. Add garlic, then tomatoes, pepper, sugar, and 1 tsp. salt. Cook, stirring occasionally, until tomatoes burst and release their juices to form a sauce, 6–8 minutes. Toss pasta with tomato sauce and basil. Top with Parmesan."
+  },
+  {
+    "name": "Salted-Butter Oatmeal Chocolate Chip Cookies",
+    "ingredients": [
+      {"name": "all-purpose flour",               "count": 1.5, "unit": "cup"},
+      {"name": "whole wheat flour",               "count": 0.5, "unit": "cup"},
+      {"name": "baking powder",                   "count": 1,   "unit": "teaspoon"},
+      {"name": "baking soda",                     "count": 0.5, "unit": "teaspoon"},
+      {"name": "kosher salt",                     "count": 1,   "unit": "teaspoon"},
+      {"name": "salted butter, room temperature", "count": 1,   "unit": "cup"},
+      {"name": "light brown sugar",               "count": 1.5, "unit": "cup"},
+      {"name": "granulated sugar",                "count": 0.5, "unit": "cup"},
+      {"name": "large eggs",                      "count": 2,   "unit": "none"},
+      {"name": "old-fashioned oats",              "count": 2,   "unit": "cup"},
+      {"name": "vanilla extract",                 "count": 1,   "unit": "tablespoon"},
+      {"name": "semisweet chocolate",             "count": 6,   "unit": "oz"}
+    ],
+    "recipeText": "Whisk all-purpose flour, whole wheat flour, baking powder, baking soda, and salt in a medium bowl. Using an electric mixer on medium speed, beat butter, brown sugar, and granulated sugar in a large bowl until light and fluffy, 3–4 minutes. Add eggs one at a time, beating after each addition to incorporate before adding the next. Reduce mixer speed to low and gradually add dry ingredients, beating until just incorporated. Add oats and vanilla and beat just to combine. Fold in chocolate with a spatula. Turn dough out onto a work surface and flatten to a disk. Freeze 15–20 minutes to prevent dough from spreading too much as it bakes, or ideally chill 24–36 hours. Meanwhile, place racks in upper and lower thirds of oven; preheat to 350°F. Line 2 rimmed baking sheets with parchment paper. Drop 1/4 cupfuls of dough onto prepared sheets. Bake cookies, rotating sheets front to back and top to bottom halfway through, until just golden brown around the edges, 12–15 minutes (cookies will firm up as they cool). Let cookies cool on baking sheets 5 minutes, then transfer to wire racks and let cool completely. Let baking sheet cool completely before lining with fresh parchment and spooning on dough for third batch. Do Ahead: Dough can be made 3 months ahead. Wrap tightly with plastic and freeze. Cookies can be made 1 day ahead. Store in an airtight container at room temperature, or freeze up to 3 months."
+  },
+  {
+    "name": "Three Cities of Spain Cheesecake",
+    "ingredients": [
+      {"name": "cream cheese, softened",  "count": 8,   "unit": "oz"},
+      {"name": "large eggs",              "count": 4,   "unit": "none"},
+      {"name": "vanilla",                 "count": 1,   "unit": "teaspoon"},
+      {"name": "sugar",                   "count": 1,   "unit": "cup"},
+      {"name": "sour cream",              "count": 16,  "unit": "oz"},
+      {"name": "sugar",                   "count": 1,   "unit": "tablespoon"},
+      {"name": "vanilla",                 "count": 1,   "unit": "teaspoon"}
+    ],
+    "recipeText": "Make crumb crust as directed. Preheat oven to 350°F. Make filling and bake cake: Beat cream cheese with an electric mixer until fluffy and add eggs, 1 at a time, then vanilla and sugar, beating on low speed until each ingredient is incorporated and scraping down bowl between additions. Put springform pan with crust in a shallow baking pan. Pour filling into crust and bake in baking pan (to catch drips) in middle of oven 45 minutes, or until cake is set 3 inches from edge but center is still slightly wobbly when pan is gently shaken. Let stand in baking pan on a rack 5 minutes. Leave oven on. Make topping: Stir together sour cream, sugar, and vanilla. Drop spoonfuls of topping around edge of cake and spread gently over center, smoothing evenly. Bake cake with topping 10 minutes. Run a knife around top edge of cake to loosen and cool completely in springform pan on rack. (Cake will continue to set as it cools.) Chill cake, loosely covered, at least 6 hours. Remove side from pan and transfer cake to a plate. Bring to room temperature before serving."
+  },
+  {
+    "name": "Sourdough Biscuits",
+    "ingredients": [
+      {"name": "baking powder",                            "count": 1.5, "unit": "teaspoon"},
+      {"name": "baking soda",                              "count": 0.5, "unit": "teaspoon"},
+      {"name": "kosher salt",                              "count": 1,   "unit": "teaspoon"},
+      {"name": "sugar",                                    "count": 0.5, "unit": "teaspoon"},
+      {"name": "all-purpose flour, plus more for dusting", "count": 1.5, "unit": "cup"},
+      {"name": "butter",                                   "count": 0.5, "unit": "cup"},
+      {"name": "sourdough",                                "count": 1,   "unit": "cup"},
+      {"name": "Flaky sea salt (optional)",                "count": 1,   "unit": "none"}
+    ],
+    "recipeText": "Preheat oven to 425°. Stir together baking powder, baking soda, kosher salt, sugar, and 1½ cups flour with a fork in a large bowl. Add ½ cup chilled butter and toss with your hands or fork just to coat. Using your fingers, smash butter into flat disks (if you miss a few, it will be fine). Using a pastry cutter or fork, work butter into dry ingredients until shaggy crumbles form (you should have some large pieces, some small pieces, some flat pieces, and some sandy flour). Add sourdough starter and mix gently with fork to incorporate, then fold with your hands just until dough comes together with just a few crumbly pieces in the bottom of the bowl. Transfer dough to a well-floured surface and pat out with your hands until about ½” thick (the shape doesn’t matter too much at this point). Fold into thirds as you would a letter to create a rough rectangle. Working from short sides, fold in thirds like a letter again. Pat dough out to a ½”-thick square. Repeat folding process. Pat out dough for a third time to a 1”-thick square—it should feel airy, like a pillow at this point. Using a floured 2½”-diameter biscuit cutter or glass, punch out as many biscuits as you can (do not twist cutter). Transfer biscuits to a parchment-lined rimmed baking sheet, spacing at least 1” apart. Using your hands, gently press scraps into a rectangle, then fold in half. Pat out to a 1”-thick rectangle and cut out more biscuits. Gather remaining scraps together to form 1 final biscuit (you should have 10 total). Transfer to baking sheet. Brush biscuit tops with 2 Tbsp. melted butter and sprinkle with sea salt if desired Bake biscuits until tall and golden and an instant-read thermometer inserted into the side of a biscuit registers 205°F), 12–15 minutes."
+  }
+]
