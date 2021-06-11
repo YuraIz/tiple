@@ -136,7 +136,7 @@ class ProductLists {
   }
 
   ///Convert to json
-  static Map<String, dynamic> get toJson{
+  static Map<String, dynamic> get toJson {
     Map<String, dynamic> json = Map<String, dynamic>();
     List<Map> shopListJson = [];
     shopList.forEach((element) => shopListJson.add(element.toJson));
@@ -151,10 +151,10 @@ class ProductLists {
   static void fromJson(Map<String, dynamic> json) {
     shopList.clear();
     fridge.clear();
-    for(var data in json['shopList']) {
+    for (var data in json['shopList']) {
       shopList.add(ProductData.fromJson(data));
     }
-    for(var data in json['fridge']) {
+    for (var data in json['fridge']) {
       fridge.add(ProductData.fromJson(data));
     }
   }
@@ -174,13 +174,48 @@ class ProductLists {
 }
 
 class _ProductState extends State<Product> {
-
   //Shadows
   int _currentShadow = 0;
   List<BoxShadow> _shadows = <BoxShadow>[
     BoxShadow(color: Colors.black26, blurRadius: 5, offset: Offset(0, 2)),
     BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5)),
   ];
+
+  Column get countText {
+    double count;
+    String unit;
+
+    if (widget.data
+            .every((element) => ProductData.ratio.containsKey(element.unit)) ||
+        widget.data
+            .every((element) => element.unit == widget.data.first.unit)) {
+      unit = widget.data.first.unit;
+    }
+
+    if (widget.data
+        .every((element) => ProductData.ratio.containsKey(element.unit))) {
+      if (widget.data.length == 1) {
+        count = widget.data.first.count;
+      } else {
+        widget.data.forEach((element) => (ProductData.ratio[element.unit] > ProductData.ratio[unit])?unit = element.unit: unit);
+        count =
+            ProductLists.convertCount(widget.data, to: unit);
+      }
+    } else if (widget.data
+        .every((element) => element.unit == widget.data.first.unit)) {
+      count = 0;
+      widget.data.forEach((element) => count += element.count);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (count != null && count != 1) Text(count.toStringAsFixed(1)),
+        if (unit != null && unit != 'none') Text(unit),
+        if (count == null && unit == null) Text('hold 4 info'),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,11 +224,10 @@ class _ProductState extends State<Product> {
       onTapCancel: () => setState(() => _currentShadow = 0),
       onTap: () => (widget.inShopList == true)
           ? setState(() {
-            bool checkState = !widget.data.first.checkState;
-                widget.data.forEach(
-                    (element) => element.checkState = checkState);
-                _currentShadow = 0;
-              })
+              bool checkState = !widget.data.first.checkState;
+              widget.data.forEach((element) => element.checkState = checkState);
+              _currentShadow = 0;
+            })
           : 0,
       onLongPress: () => setState(
         () => {
@@ -329,24 +363,7 @@ class _ProductState extends State<Product> {
                             : TextStyle(color: Colors.black87),
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        if (widget.data.every((element) =>
-                            ProductData.ratio.containsKey(element.unit)))
-                          Text(ProductLists.convertCount(widget.data,
-                                  to: widget.data.first.unit)
-                              .toStringAsFixed(1)),
-                        if (widget.data.every((element) =>
-                            ProductData.ratio.containsKey(element.unit)))
-                          if (widget.data.first.unit != 'none')
-                            Text(widget.data.first.unit),
-                        if (!widget.data.every((element) =>
-                                ProductData.ratio.containsKey(element.unit)) &&
-                            widget.data.length > 1)
-                          Text('hold 4 info'),
-                      ],
-                    ),
+                    countText,
                   ],
                 ),
               ),

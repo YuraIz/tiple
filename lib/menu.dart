@@ -24,6 +24,9 @@ class MenuItem {
   ///Name of week day
   String dayName = 'no name';
 
+  ///Index of week day
+  int dayIndex = 8;
+
   ///Constructor for recipe MenuItem
   MenuItem(this.recipe) {
     ingredients.forEach((ingredient) => ProductLists.shopList.add(ingredient));
@@ -31,7 +34,7 @@ class MenuItem {
   }
 
   ///Constructor for week day MenuItem
-  MenuItem.day(this.dayName) {
+  MenuItem.day(this.dayName, this.dayIndex) {
     isRecipe = false;
   }
 
@@ -51,6 +54,7 @@ class MenuItem {
     json['isRecipe'] = isRecipe;
     json['recipe'] = recipe.toJson;
     json['dayName'] = dayName;
+    json['dayIndex'] = dayIndex;
     return json;
   }
 
@@ -59,20 +63,21 @@ class MenuItem {
     isRecipe = json['isRecipe'];
     recipe = Recipe.fromJson(json['recipe']);
     dayName = json['dayName'];
+    dayIndex = json['dayIndex'];
   }
 }
 
 class MenuRecipes {
   ///List of MenuItems
   static var _items = <MenuItem>[
-    MenuItem.day('Monday'),
-    MenuItem.day('Tuesday'),
-    MenuItem.day('Wednesday'),
-    MenuItem.day('Thursday'),
-    MenuItem.day('Friday'),
-    MenuItem.day('Saturday'),
-    MenuItem.day('Sunday'),
-    MenuItem.day('Other'),
+    MenuItem.day('Monday', 1),
+    MenuItem.day('Tuesday', 2),
+    MenuItem.day('Wednesday', 3),
+    MenuItem.day('Thursday', 4),
+    MenuItem.day('Friday', 5),
+    MenuItem.day('Saturday', 6),
+    MenuItem.day('Sunday', 7),
+    MenuItem.day('Other', 8),
   ];
 
   static bool contains(Object element) => _items.contains(element);
@@ -283,6 +288,7 @@ class _MenuState extends State<Menu> {
                             child: Text(
                               item.dayName,
                               textScaleFactor: 1.2,
+                              style: TextStyle(color:  (item.dayIndex == DateTime.now().weekday)? Colors.green: Colors.black87),
                             ),
                           )
                 ],
