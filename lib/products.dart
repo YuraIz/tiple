@@ -176,12 +176,59 @@ class ProductLists {
 class _ProductState extends State<Product> {
   //Shadows
   int _currentShadow = 0;
-  List<BoxShadow> _shadows = <BoxShadow>[
-    BoxShadow(color: Colors.black26, blurRadius: 5, offset: Offset(0, 2)),
-    BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5)),
-  ];
 
-  Column get countText {
+  BoxShadow get shadow {
+    if (_currentShadow == 0) {
+      return BoxShadow(
+          color: Colors.black26, blurRadius: 5, offset: Offset(0, 2));
+    } else {
+      return BoxShadow(
+          color: Colors.black26, blurRadius: 10, offset: Offset(0, 5));
+    }
+  }
+
+  BoxDecoration get decoration {
+    ThemeData theme = Theme.of(context);
+    return BoxDecoration(
+      color: (widget.data.first.forRecipe == true)
+          ? theme.focusColor
+          : theme.cardColor,
+      boxShadow: [
+        (_currentShadow == 0)
+            ? BoxShadow(
+                color: theme.shadowColor, blurRadius: 5, offset: Offset(0, 2))
+            : BoxShadow(
+                color: theme.shadowColor, blurRadius: 10, offset: Offset(0, 5))
+      ],
+      borderRadius: BorderRadius.circular(12),
+    );
+  }
+
+  Widget get checkMark {
+    return Padding(
+      padding: EdgeInsets.all(12),
+      child: (widget.data.first.checkState)
+          ? Icon(
+              FluentIcons.checkmark_circle_24_filled,
+              color: Theme.of(context).toggleableActiveColor,
+            )
+          : Icon(
+              FluentIcons.checkmark_circle_24_regular,
+              color: Theme.of(context).iconTheme.color,
+            ),
+    );
+  }
+
+  Widget get nameText {
+    return Flexible(
+      child: Text(
+        widget.data.first.name,
+        style: Theme.of(context).textTheme.headline5,
+      ),
+    );
+  }
+
+  Widget get countText {
     double count;
     String unit;
 
@@ -197,9 +244,11 @@ class _ProductState extends State<Product> {
       if (widget.data.length == 1) {
         count = widget.data.first.count;
       } else {
-        widget.data.forEach((element) => (ProductData.ratio[element.unit] > ProductData.ratio[unit])?unit = element.unit: unit);
-        count =
-            ProductLists.convertCount(widget.data, to: unit);
+        widget.data.forEach((element) =>
+            (ProductData.ratio[element.unit] > ProductData.ratio[unit])
+                ? unit = element.unit
+                : unit);
+        count = ProductLists.convertCount(widget.data, to: unit);
       }
     } else if (widget.data
         .every((element) => element.unit == widget.data.first.unit)) {
@@ -219,6 +268,7 @@ class _ProductState extends State<Product> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return GestureDetector(
       onTapDown: (tapDownDetails) => setState(() => _currentShadow = 1),
       onTapCancel: () => setState(() => _currentShadow = 0),
@@ -246,7 +296,7 @@ class _ProductState extends State<Product> {
                   height: 50,
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.cardColor,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
@@ -323,27 +373,15 @@ class _ProductState extends State<Product> {
         child: Container(
           decoration: BoxDecoration(
             color: (widget.data.first.forRecipe == true)
-                ? Color.fromARGB(255, 235, 255, 222)
-                : Colors.white,
-            boxShadow: [_shadows[_currentShadow]],
+                ? theme.focusColor
+                : theme.cardColor,
+            boxShadow: [shadow],
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (widget.inShopList == true)
-                Padding(
-                  padding: EdgeInsets.all(12),
-                  child: (widget.data.first.checkState)
-                      ? Icon(
-                          FluentIcons.checkmark_circle_24_filled,
-                          color: Colors.lightGreen,
-                        )
-                      : Icon(
-                          FluentIcons.checkmark_circle_24_regular,
-                          color: Colors.black87,
-                        ),
-                ),
+              if (widget.inShopList == true) checkMark,
               Container(
                 width: MediaQuery.of(context).size.width *
                     ((widget.inShopList) ? 0.8 : 0.92),
@@ -354,15 +392,7 @@ class _ProductState extends State<Product> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(
-                      child: Text(
-                        widget.data.first.name,
-                        textScaleFactor: 1.5,
-                        style: (widget.data.first.forRecipe == true)
-                            ? TextStyle(color: Colors.black)
-                            : TextStyle(color: Colors.black87),
-                      ),
-                    ),
+                    nameText,
                     countText,
                   ],
                 ),

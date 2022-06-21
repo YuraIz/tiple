@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,7 @@ class _ShopListState extends State<ShopList> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     ProductLists.sort();
     return Scaffold(
       body: Center(
@@ -112,9 +115,8 @@ class _ShopListState extends State<ShopList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image(
-                      width: 240,
-                      image: NetworkImage(
-                          'https://img.icons8.com/fluent/480/000000/ingredients.png')),
+                      width: 300,
+                      image: AssetImage("assets/images/shop_list.png")),
                   Text(
                     'Your shop list is empty',
                     textScaleFactor: 1.5,
@@ -131,6 +133,10 @@ class _ShopListState extends State<ShopList> {
             String productUnit = 'none';
 
             Picker countPicker = new Picker(
+
+              textStyle: Theme.of(context).textTheme.subtitle1,
+              backgroundColor: Colors.transparent,
+              containerColor: Colors.transparent,
               height: 70,
               delimiter: [
                 PickerDelimiter(
@@ -150,6 +156,9 @@ class _ShopListState extends State<ShopList> {
             );
 
             Picker unitPicker = new Picker(
+              textStyle: Theme.of(context).textTheme.subtitle1,
+              backgroundColor: Colors.transparent,
+              containerColor: Colors.transparent,
               height: 70,
               adapter: PickerDataAdapter(pickerdata: [
                 'none',

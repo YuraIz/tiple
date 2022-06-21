@@ -1,48 +1,27 @@
+import 'package:animations/animations.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:tiple/products.dart';
 
 import 'fridge.dart';
 import 'menu.dart';
+import 'palette.dart';
 import 'recipes.dart';
 import 'shop_list.dart';
 
 void main() {
   RecipesList.addFromJson();
   ProductLists.loadState();
-  MenuRecipes.loadState();
+  MenuItems.loadState();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarManager.setColor(Colors.transparent);
     return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          color: Colors.white,
-          elevation: 3,
-        ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          showUnselectedLabels: false,
-          elevation: 0,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: Colors.red,
-          unselectedItemColor: Colors.black87,
-        ),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.red,
-          elevation: 3,
-          highlightElevation: 6,
-        ),
-        canvasColor: Colors.white,
-        primaryColor: Colors.white,
-        shadowColor: Colors.black,
-      ),
+      debugShowCheckedModeBanner: false,
+      theme: Palette.lightTheme,
       home: MyHomePage(),
     );
   }
@@ -55,7 +34,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   static const List<String> _names = <String>[
     'Recipes',
     'Week menu',
@@ -63,24 +42,83 @@ class _MyHomePageState extends State<MyHomePage> {
     'Shop list',
   ];
 
-  static List<Widget> _homePages = <Widget>[
+  static List<Widget> pages = <Widget>[
     RecipesPage(),
     Menu(),
     Fridge(),
     ShopList(),
   ];
 
+  ///Get action button for AppBar
+  Widget get action {
+    var actions = [
+      Container(),
+      //Menu action
+      DragTarget<Key>(
+        builder: (context, candidates, rejected) {
+          return IconButton(
+            onPressed: () => setState(() {
+              MenuItems.clear();
+              pages[1] = Menu();
+            }),
+            icon: Icon(
+              FluentIcons.delete_dismiss_24_regular,
+            ),
+          );
+        },
+        onAccept: (key) => setState(() {
+          MenuItems.remove(key);
+          pages[1] = Menu();
+        }),
+      ),
+      //Fridge action
+      IconButton(
+        onPressed: () => setState(() {
+          ProductLists.fridge.clear();
+          pages[2] = Fridge();
+        }),
+        icon: Icon(
+          FluentIcons.delete_dismiss_24_regular,
+        ),
+      ),
+      //ShopList action
+      IconButton(
+        onPressed: () => setState(() {
+          ProductLists.shopList.clear();
+          pages[3] = ShopList();
+        }),
+        icon: Icon(
+          FluentIcons.delete_dismiss_24_regular,
+        ),
+      ),
+    ];
+    return actions[pageIndex];
+  }
+
   ///Index of selected item
-  int _currentIndex = 0;
+  int pageIndex = 0;
+
+  Text get title {
+    return Text(_names[pageIndex] + ' page');
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text(_names.elementAt(_currentIndex) + ' page'),
+          backwardsCompatibility: false,
+          title: title,
+          titleTextStyle: Theme.of(context).textTheme.headline5,
+          actionsIconTheme: Theme.of(context).iconTheme,
+          actions: <Widget>[action],
         ),
-        body: Center(
-          child: _homePages.elementAt(_currentIndex),
+        body: PageTransitionSwitcher(
+          transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+              FadeThroughTransition(
+            animation: primaryAnimation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          ),
+          child: pages[pageIndex],
         ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
@@ -93,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
           child: BottomNavigationBar(
-            currentIndex: _currentIndex,
+            currentIndex: pageIndex,
             items: [
               BottomNavigationBarItem(
                 icon: Icon(FluentIcons.book_24_regular),
@@ -116,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: 'Shop list',
               )
             ],
-            onTap: (index) => setState(() => _currentIndex = index),
+            onTap: (index) => setState(() => pageIndex = index),
           ),
         ),
       );

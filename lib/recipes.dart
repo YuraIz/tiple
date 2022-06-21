@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:animations/animations.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:tiple/menu.dart';
 import 'package:tiple/products.dart';
-
-import 'menu.dart';
 
 var recipesUri = Uri.parse(
     'https://raw.githubusercontent.com/YuraIz/testJsonRecipes/main/recipes.json');
@@ -49,6 +48,97 @@ class Recipe {
     json['recipeText'] = recipeText;
     return json;
   }
+
+  Widget page(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(FluentIcons.arrow_left_24_regular),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Text(
+            name,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  for (var ingredient in ingredients)
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            ingredient.name,
+                            textScaleFactor: 1.5,
+                          ),
+                          if (ingredient.count != 1 ||
+                              ingredient.unit != 'none')
+                            Text(
+                              ((ingredient.count == 1)
+                                      ? ''
+                                      : ingredient.count.toString()) +
+                                  ((ingredient.unit == 'none')
+                                      ? ''
+                                      : ' ' + (ingredient.unit)),
+                              textScaleFactor: 1.2,
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            SingleChildScrollView(
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: 10, bottom: 70, left: 10, right: 10),
+                child: Text(
+                  '    ' + recipeText,
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
+            )
+          ],
+        ),
+        bottomNavigationBar: Stack(
+          children: [
+            TabBar(
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: Colors.transparent,
+              labelColor: Colors.transparent,
+              tabs: [
+                Tab(icon: Icon(FluentIcons.text_bullet_list_ltr_24_regular)),
+                Tab(icon: Icon(FluentIcons.text_first_line_24_regular)),
+              ],
+            ),
+            TabBar(
+              unselectedLabelColor: Colors.transparent,
+              indicatorColor: Colors.transparent,
+              labelColor: Theme.of(context).accentColor,
+              tabs: [
+                Tab(icon: Icon(FluentIcons.text_bullet_list_ltr_24_filled)),
+                Tab(icon: Icon(FluentIcons.text_first_line_24_filled)),
+              ],
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(FluentIcons.food_24_filled),
+          onPressed: () => MenuItems.add(this),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      ),
+    );
+  }
 }
 
 class RecipesList {
@@ -77,7 +167,7 @@ class RecipesList {
     }
 
     localRecipes.lastModified().then((value) {
-      if(DateTime.now().difference(value).inDays > 10) {
+      if (DateTime.now().difference(value).inDays > 10) {
         http
             .get(recipesUri)
             .then((response) => localRecipes.writeAsString(response.body));
@@ -98,9 +188,6 @@ class RecipesPage extends StatefulWidget {
 }
 
 class _RecipesPageState extends State<RecipesPage> {
-  ///Index of selected recipe
-  int _currentIndex = -1;
-
   @override
   Widget build(BuildContext context) {
     if (RecipesList.data.isEmpty) {
@@ -116,139 +203,43 @@ class _RecipesPageState extends State<RecipesPage> {
               child: Stack(
                 children: [
                   ListView(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(vertical: 10),
                     children: [
                       for (var recipe in RecipesList.data)
-                        GestureDetector(
-                          key: UniqueKey(),
-                          onTap: () => setState(() =>
-                              _currentIndex = RecipesList.data.indexOf(recipe)),
+                        Padding(
+                          padding: EdgeInsets.all(10),
                           child: Container(
-                            //height: 50,
-                            color: Colors.transparent,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            //color: Colors.transparent,
-                            child: Container(
-                              //height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 2))
+                              ],
+                            ),
+                            child: OpenContainer(
+                              closedColor: Theme.of(context).cardColor,
+                              closedShape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 5,
-                                      offset: Offset(0, 2))
-                                ],
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.only(left: 10, top: 13),
-                                    child: Text(
-                                      recipe.name,
-                                      textScaleFactor: 1.4,
-                                    ),
-                                  ),
-                                  SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      children: [
-                                        for (var ingredient
-                                            in recipe.ingredients)
-                                          Container(
-                                            padding: EdgeInsets.all(10),
-                                            child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 5, horizontal: 10),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.black26,
-                                                      blurRadius: 5,
-                                                      offset: Offset(0, 2))
-                                                ],
-                                              ),
-                                              child: Text(
-                                                ingredient.name,
-                                                textScaleFactor: 1.2,
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                              openBuilder: (_, __) => recipe.page(context),
+                              closedBuilder: (_, __) => Container(
+                                padding: EdgeInsets.only(
+                                    top: 10, bottom: 8, left: 10, right: 10),
+                                child: Text(
+                                  recipe.name,
+                                  textScaleFactor: 1.4,
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
                               ),
                             ),
                           ),
                         ),
                     ],
                   ),
-                  if (_currentIndex != -1)
-                    SlidingUpPanel(
-                      margin: EdgeInsets.all(10),
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                      maxHeight: MediaQuery.of(context).size.height * 0.75,
-                      panelBuilder: (ScrollController sc) =>
-                          SingleChildScrollView(
-                        controller: sc,
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.75,
-                                  padding: EdgeInsets.only(
-                                      left: 10, right: 10, top: 12),
-                                  alignment: AlignmentDirectional.topStart,
-                                  child: Text(
-                                    RecipesList.data[_currentIndex].name,
-                                    textScaleFactor: 1.4,
-                                  ),
-                                ),
-                                MaterialButton(
-                                  highlightColor: Colors.transparent,
-                                  minWidth: 64,
-                                  height: 64,
-                                  child: (MenuRecipes.contains(
-                                          RecipesList.data[_currentIndex]))
-                                      ? Icon(
-                                          FluentIcons.add_circle_32_filled,
-                                          size: 32,
-                                          color: Colors.green,
-                                        )
-                                      : Icon(
-                                          FluentIcons.add_circle_32_regular,
-                                          size: 32,
-                                          color: Colors.black87,
-                                        ),
-                                  onPressed: () => (setState(() => {
-                                        MenuRecipes.add(
-                                          MenuItem(
-                                              RecipesList.data[_currentIndex]),
-                                        ),
-                                      })),
-                                )
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(10),
-                              alignment: AlignmentDirectional.topStart,
-                              child: Text(
-                                RecipesList.data[_currentIndex].recipeText,
-                                textScaleFactor: 1.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                 ],
               ),
             )

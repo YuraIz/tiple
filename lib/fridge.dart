@@ -103,9 +103,8 @@ class _FridgeState extends State<Fridge> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Image(
-                    width: 240,
-                    image: NetworkImage(
-                        'https://img.icons8.com/fluent/480/000000/grocery-shelf.png'),
+                    width: 300,
+                    image: AssetImage("assets/images/fridge.png"),
                   ),
                   Text(
                     'Your fridge is empty',
